@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'degular';
+    src: url('../fonts/degular.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+@font-face {
+    font-family: 'PPfragement';
+    src: url('../fonts/PPfragement.woff') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+.degular{
+  font-family: degular;
+}
+.ppf{
+  font-family: PPfragement;
+}
