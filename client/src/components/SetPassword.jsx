@@ -15,7 +15,7 @@ const SetPassword = () => {
     if (!userId || !password) return;
 
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/set-password", {
+      const res = await axios.post("/api/auth/set-password", {
         userId,
         newPassword: password,
       });

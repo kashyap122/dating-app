@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SignInImage from "../assets/SignInImage.jpg";
 import GoogleIcon from "../assets/Google.png";
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,13 +27,13 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google";
+    window.location.href = "/api/auth/google";
   };
   
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", credentials);
+      const response = await axios.post("/api/auth/login", credentials);
       // Directly store the token in localStorage
       localStorage.setItem("authToken", response.data.token);
       console.log("Login successful:", response.data);

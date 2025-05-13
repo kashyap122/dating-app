@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import RegisterImage from "../assets/Registration.jpg";
 import GoogleIcon from "../assets/Google.png";
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axios';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Register = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google";
+    window.location.href = "/api/auth/google";
   };
 
   const handleRegister = async (e) => {
@@ -34,7 +34,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/register", {
+      const response = await axios.post("/api/auth/register", {
         firstname: formData.firstname,
         lastname: formData.lastname,
         username: formData.username,
