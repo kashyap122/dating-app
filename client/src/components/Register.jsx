@@ -1,162 +1,173 @@
+// src/components/Register.jsx
 import React, { useState } from 'react';
 import RegisterImage from "../assets/Registration.jpg";
 import GoogleIcon from "../assets/Google.png";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 
-const Register = () => {
+export default function Register() {
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
+  const [form, setForm] = useState({
+    firstname: "", lastname: "", username: "",
+    email: "", password: "", confirmPassword: ""
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
+  const handleGoogle = () => window.location.href = "/api/auth/google";
 
-  const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
-  };
-
-  const handleRegister = async (e) => {
+  const handleRegister = async e => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+    if (form.password !== form.confirmPassword) {
+      return alert("Passwords must match");
     }
-
     try {
-      const response = await axios.post("/api/auth/register", {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword
-      });
-
-      console.log("Registration successful:", response.data);
-      navigate("/")
-      // Optional: Redirect to login or clear form
-      setFormData({
-        firstname: "",
-        lastname: "",
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      });
-    } catch (error) {
-      console.error("Registration error:", error.response?.data || error.message);
+      await axios.post("/api/auth/register", form);
+      navigate("/");
+    } catch {
+      alert("Registration failed. Try another email or username.");
     }
   };
 
   return (
-    <div className='bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center min-h-screen'>
-      <div className='flex flex-col lg:flex-row max-w-4xl w-full m-2 bg-white rounded-lg shadow-lg overflow-hidden'>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-300 via-purple-300 to-indigo-400 p-4">
+      <div className="bg-white rounded-xl shadow-xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
 
-        <div className='hidden lg:block lg:w-1/2'>
-          <img src={RegisterImage} alt="Register" className='w-full h-full object-contain' />
+        {/* Illustration */}
+        <div className="hidden md:flex md:w-1/2 items-center justify-center bg-white">
+          <img
+            src={RegisterImage}
+            alt="Join us"
+            className="w-full h-full object-contain"
+          />
         </div>
 
-        <div className='w-full lg:w-1/2 p-6 sm:p-8'>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Create Account</h1>
 
-          <button className="w-full py-2 border border-gray-300 bg-white text-gray-800 rounded-md hover:bg-gray-100 transition duration-200" onClick={handleGoogleLogin}>
-            <div className="flex justify-center items-center space-x-3">
-              <img src={GoogleIcon} alt="google icon" className='w-5 h-5 object-contain' />
-              <span>Register with Google</span>
-            </div>
+        {/* Form */}
+        <div className="w-full md:w-1/2 p-8">
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+            Create Your Account
+          </h1>
+
+          {/* Google */}
+          <button
+            onClick={handleGoogle}
+            className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition"
+          >
+            <img src={GoogleIcon} alt="Google" className="h-6 w-6" />
+            <span className="font-medium text-gray-700">Sign up with Google</span>
           </button>
 
-          <div className="flex items-center my-4">
-            <hr className="w-full border-gray-300" />
-            <span className="mx-4 text-gray-600">or</span>
-            <hr className="w-full border-gray-300" />
+          {/* Divider */}
+          <div className="flex items-center my-6">
+            <hr className="flex-1 border-gray-300" />
+            <span className="mx-4 text-gray-500">or</span>
+            <hr className="flex-1 border-gray-300" />
           </div>
 
-          <form className='space-y-4' onSubmit={handleRegister}>
-            <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+          {/* Name, Username, Email, Password */}
+          <form className="space-y-4" onSubmit={handleRegister}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <input
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  name="lastname"
+                  value={form.lastname}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Username
+              </label>
               <input
-                type="text"
-                name="firstname"
-                value={formData.firstname}
+                name="username"
+                value={form.username}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="First Name"
                 required
-              />
-              <input
-                type="text"
-                name="lastname"
-                value={formData.lastname}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Last Name"
-                required
+                className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
             </div>
 
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Username"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+              />
+            </div>
 
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Email"
-              required
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  name="password"
+                  type="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Confirm Password
+                </label>
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+              </div>
+            </div>
 
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Password"
-              required
-            />
-
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Confirm Password"
-              required
-            />
-
-            <button type="submit" className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200">
-              Register
+            <button
+              type="submit"
+              className="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition"
+            >
+              Sign Up
             </button>
-
-            <p className="text-sm text-center">
-              Already have an account? <Link to="/" className="text-blue-600 hover:underline">Login</Link>
-            </p>
           </form>
+
+          <p className="mt-6 text-center text-gray-600">
+            Already a member?{" "}
+            <Link to="/" className="text-pink-600 font-medium hover:underline">
+              Log in here
+            </Link>
+          </p>
         </div>
       </div>
     </div>
   );
-};
-
-export default Register;
+}

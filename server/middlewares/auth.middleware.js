@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Only attach the user ID, not the whole token payload
-    req.user = { _id: decoded.id };
+    req.user = { _id: decoded.id,id: decoded.id };
 
     console.log("✅ Decoded token:", decoded);
     next();

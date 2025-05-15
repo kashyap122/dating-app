@@ -1,58 +1,112 @@
+// src/components/Lifestyle.jsx
 import React, { useState } from 'react';
-// import axios from '../axios';
-import axios from '../axios';  // use the configured instance
-import { useNavigate } from 'react-router-dom';
+import axios from '../axios';
 import NextButton from './NextButton';
 
-const Lifestyle = () => {
-  const navigate = useNavigate();
-  const [form, setForm] = useState({ job:'', education:'', smoking:'no', drinking:'no', kids:'none', religion:'' });
+export default function Lifestyle() {
+  const [form, setForm]   = useState({
+    job: '', education: '',
+    smoking: 'no', drinking: 'no',
+    kids: 'none', religion: ''
+  });
   const [error, setError] = useState('');
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    setError('');
+  };
+
   const handleNext = async () => {
     try {
-      await axios.post('/api/profile/lifestyle', form, { withCredentials:true });
-      navigate('/personality');
-    } catch {
-      setError('Save failed');
+      const token = localStorage.getItem('authToken');
+      await axios.post('/api/profile/lifestyle', form, {
+        headers: { Authorization: token }
+      });
+      window.location.href = '/personality';
+    } catch (err) {
+      console.error('Lifestyle error:', err);
+      setError('Save failed. Please try again.');
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-4 bg-gradient-to-r from-yellow-50 to-white">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Lifestyle</h2>
-      <div className="space-y-4 mb-4">
-        <input name="job" placeholder="Job" value={form.job} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none" />
-        <input name="education" placeholder="Education" value={form.education} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none" />
-        <select name="smoking" value={form.smoking} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none">
-          <option value="no">No Smoking</option>
-          <option value="occasionally">Occasionally</option>
-          <option value="yes">Yes</option>
-        </select>
-        <select name="drinking" value={form.drinking} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none">
-          <option value="no">No Drinking</option>
-          <option value="occasionally">Occasionally</option>
-          <option value="yes">Yes</option>
-        </select>
-        <select name="kids" value={form.kids} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none">
-          <option value="none">No Kids</option>
-          <option value="has">Has Kids</option>
-          <option value="wants">Wants Kids</option>
-          <option value="unsure">Unsure</option>
-        </select>
-        <input name="religion" placeholder="Religion" value={form.religion} onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-300 via-purple-300 to-indigo-400 p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-8">
+        {/* Header */}
+        <h2 className="degular text-3xl font-bold text-center text-gray-800 mb-2">
+          Lifestyle & Habits
+        </h2>
+        <p className="text-center text-gray-600 italic mb-6">
+          Your everyday choices say a lot—let’s capture the essentials.
+        </p>
+
+        {/* Form Fields */}
+        <div className="space-y-4 mb-6">
+          <input
+            name="job"
+            placeholder="What do you do for work?"
+            value={form.job}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <input
+            name="education"
+            placeholder="Education"
+            value={form.education}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+          <select
+            name="smoking"
+            value={form.smoking}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <option value="no">I don't smoke</option>
+            <option value="occasionally">Occasionally</option>
+            <option value="yes">Yes, regularly</option>
+          </select>
+          <select
+            name="drinking"
+            value={form.drinking}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <option value="no">I don't drink</option>
+            <option value="occasionally">Occasionally</option>
+            <option value="yes">Yes, regularly</option>
+          </select>
+          <select
+            name="kids"
+            value={form.kids}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <option value="none">No kids</option>
+            <option value="has">I have kids</option>
+            <option value="wants">I want kids</option>
+            <option value="unsure">Not sure yet</option>
+          </select>
+          <input
+            name="religion"
+            placeholder="Religion or belief (optional)"
+            value={form.religion}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
+
+        {/* Error */}
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">
+            {error}
+          </p>
+        )}
+
+        {/* Next Button */}
+        <NextButton onClick={handleNext} disabled={false} />
       </div>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-      <NextButton onClick={handleNext} disabled={false} />
     </div>
   );
 }
-
-export default Lifestyle

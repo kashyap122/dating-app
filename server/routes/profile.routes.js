@@ -1,3 +1,4 @@
+// server/routes/profile.routes.js
 const express = require('express');
 const router = express.Router();
 
@@ -9,10 +10,11 @@ const {
   saveLifestyle,
   savePersonality,
   saveIntentions,
-  getProfileStatus
+  getProfileStatus,
+  getMyProfile
 } = require('../controllers/profile.controller');
 
-// Step 1: photo uploads
+// Step 1: photo uploads 
 router.post(
   '/photos',
   ensureAuth,
@@ -20,7 +22,8 @@ router.post(
   uploadPhotos
 );
 
-// Status check (StepGuard calls this)
+// Status check for step-guard
+// → GET /api/profile/status
 router.get(
   '/status',
   ensureAuth,
@@ -54,5 +57,8 @@ router.post(
   ensureAuth,
   saveIntentions
 );
+
+// in routes/profile.routes.js
+router.get('/me', ensureAuth, getMyProfile);
 
 module.exports = router;
